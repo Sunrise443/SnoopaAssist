@@ -1,3 +1,9 @@
 from django.db import models
+from pydantic import BaseModel
+from typing import List
 
-# Create your models here.
+
+class OllamaResponse(BaseModel):
+    tasks: List[str]
+    restTip: str
+    notes: str
