@@ -1,13 +1,12 @@
-import { useState } from 'react'
+import { ThemeProvider } from "./components/theme-provider";
+import MainPage from "./pages/MainPage";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      
-    </>
-  )
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <MainPage />
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;
