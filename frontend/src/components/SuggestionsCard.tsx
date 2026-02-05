@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { ChatResponse } from "@/services/api";
+import { Button } from "./ui/button";
 
 export type Message = {
   date: string;
@@ -24,7 +25,7 @@ export default function SuggestionsCard({
         <CardTitle>Suggestions</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3 flex-1">
-        <ScrollArea className="h-[calc(100vh-190px)]">
+        <ScrollArea className="h-[calc(100vh-210px)]">
           <div className="space-y-2">
             {messages.map((msg, i) => (
               <div
@@ -35,12 +36,35 @@ export default function SuggestionsCard({
                     : "mr-auto bg-muted"
                 }
                 style={{
-                  maxWidth: "80%",
+                  maxWidth: "100%",
                   padding: "8px 12px",
                   borderRadius: "12px",
                 }}
               >
-                {msg.text.notes}
+                <div className="space-y-2">
+                  <div className="space-y-1 py-2">
+                    {msg.text.tasks.map((task, idx) => (
+                      <div
+                        key={`${task}-${idx}`}
+                        className="flex items-center justify-between rounded-md bg-background px-3 py-2 text-sm"
+                      >
+                        <span className="mr-2">{task}</span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="ml-2 shrink-0"
+                          type="button"
+                        >
+                          Confirm
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-sm ">{msg.text.restTip}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {msg.text.notes}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
