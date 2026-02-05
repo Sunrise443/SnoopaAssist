@@ -1,9 +1,10 @@
 import { ModeToggle } from "@/components/mode-toggle";
-import DayCard, { type Task } from "@/components/DayCard";
+import DayCard from "@/components/DayCard";
 import SuggestionsCard from "@/components/SuggestionsCard";
 import { useEffect, useState } from "react";
 import { chatApi } from "@/services/api";
 import type { Message } from "@/types/Chat";
+import type { Task } from "@/types/Tasks";
 
 export default function PlannerPage() {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
@@ -45,6 +46,7 @@ export default function PlannerPage() {
 
       const newMessage: Message = {
         date: new Date().toISOString(),
+        day: params.date,
         text: response,
         from: "system",
       };

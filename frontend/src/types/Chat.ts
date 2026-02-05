@@ -14,6 +14,7 @@ export type ChatResponse = {
 
 export type Message = {
   date: string;
+  day: string;
   text: ChatResponse;
   from: string;
 };

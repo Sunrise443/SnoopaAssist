@@ -14,6 +14,7 @@ export default function SuggestionsCard({
   loading,
   error,
 }: SuggestionsCardProps) {
+  const onConfirmTaskButtonClick = () => {};
   return (
     <Card className="rounded-2xl h-full flex flex-col h-[calc(100vh-90px)]">
       <CardHeader>
@@ -36,6 +37,7 @@ export default function SuggestionsCard({
                   borderRadius: "12px",
                 }}
               >
+                <p className="my-1 mx-2 text-sm font-semibold">{msg.day}</p>
                 <div className="space-y-2">
                   <div className="space-y-1 py-2">
                     {msg.text.tasks.map((task, idx) => (
@@ -49,14 +51,15 @@ export default function SuggestionsCard({
                           size="sm"
                           className="ml-2 shrink-0"
                           type="button"
+                          onClick={onConfirmTaskButtonClick}
                         >
                           Confirm
                         </Button>
                       </div>
                     ))}
                   </div>
-                  <p className="mt-2 text-sm ">{msg.text.restTip}</p>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="mt-2 mx-2 text-sm ">{msg.text.restTip}</p>
+                  <p className="mt-2 mx-2 text-sm text-muted-foreground">
                     {msg.text.notes}
                   </p>
                 </div>
