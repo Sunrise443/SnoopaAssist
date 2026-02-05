@@ -7,14 +7,15 @@ interface SuggestionsCardProps {
   messages: Message[];
   loading: boolean;
   error: string | null;
+  onConfirmTask: (day: string, taskTitle: string) => void;
 }
 
 export default function SuggestionsCard({
   messages,
   loading,
   error,
+  onConfirmTask,
 }: SuggestionsCardProps) {
-  const onConfirmTaskButtonClick = () => {};
   return (
     <Card className="rounded-2xl h-full flex flex-col h-[calc(100vh-90px)]">
       <CardHeader>
@@ -51,7 +52,7 @@ export default function SuggestionsCard({
                           size="sm"
                           className="ml-2 shrink-0"
                           type="button"
-                          onClick={onConfirmTaskButtonClick}
+                          onClick={() => onConfirmTask(msg.day, task)}
                         >
                           Confirm
                         </Button>

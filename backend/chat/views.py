@@ -14,9 +14,6 @@ class OllamaChatView(APIView):
         user_existing_tasks = request.data.get("tasks", "")
         user_personality = request.data.get("personality", "")
 
-        if not user_existing_tasks:
-            return Response({"error": "No user message given."}, status=status.HTTP_400_BAD_REQUEST)
-
         message = f"""
             You are a professional psychologist and career manager. 
             Generate a JSON response containing three fields: 

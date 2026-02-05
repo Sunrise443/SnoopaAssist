@@ -9,6 +9,7 @@ import type { Task } from "@/types/Tasks";
 export default function PlannerPage() {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsError, setSuggestionsError] = useState<string | null>(null);
+  const [tasksVersion, setTasksVersion] = useState<Record<string, number>>({});
 
   const suggestionStorageKey = `suggestion-${new Date()
     .toISOString()
@@ -67,9 +68,47 @@ export default function PlannerPage() {
     );
   }, [suggestionMessages, suggestionStorageKey]);
 
+  const handleConfirmSuggestedTask = (day: string, taskTitle: string) => {
+    const storageKey = `tasks-${day}`;
+
+    let existingTasks: Task[] = [];
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        try {
+          existingTasks = JSON.parse(saved) as Task[];
+        } catch {
+          existingTasks = [];
+        }
+      }
+
+      const updatedTasks: Task[] = [
+        ...existingTasks,
+        { title: taskTitle, date: day, completed: false },
+      ];
+
+      localStorage.setItem(storageKey, JSON.stringify(updatedTasks));
+
+      setTasksVersion((prev) => ({
+        ...prev,
+        [day]: (prev[day] ?? 0) + 1,
+      }));
+    }
+  };
+
   const now = new Date();
   const today = now.getDate();
   const currentMonth = now.getMonth() + 1;
+
+  const yesterdayDate = `${String(today - 1).padStart(2, "0")}.${String(
+    currentMonth
+  ).padStart(2, "0")}`;
+  const todayDate = `${String(today).padStart(2, "0")}.${String(
+    currentMonth
+  ).padStart(2, "0")}`;
+  const tomorrowDate = `${String(today + 1).padStart(2, "0")}.${String(
+    currentMonth
+  ).padStart(2, "0")}`;
 
   return (
     <div className="min-h-screen">
@@ -82,23 +121,22 @@ export default function PlannerPage() {
         <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           <DayCard
             title="Yesterday"
-            date={`${String(today - 1).padStart(2, "0")}.${String(
-              currentMonth
-            ).padStart(2, "0")}`}
+            date={yesterdayDate}
+            key={`daycard-${yesterdayDate}-${tasksVersion[yesterdayDate] ?? 0}`}
             onGenerateSuggestions={handleGenerateSuggestions}
           />
           <DayCard
             title="Today"
-            date={`${String(today).padStart(2, "0")}.${String(
-              currentMonth
-            ).padStart(2, "0")}`}
+            date={todayDate}
+            key={`daycard-${todayDate}-${tasksVersion[todayDate] ?? 0}`}
             onGenerateSuggestions={handleGenerateSuggestions}
           />
           <DayCard
             title="Tomorrow"
-            date={`${String(today + 1).padStart(2, "0")}.${String(
-              currentMonth
-            ).padStart(2, "0")}`}
+            date={tomorrowDate}
+            key={`daycard-${tomorrowDate}-${
+              tasksVersion[tomorrowDate] ?? 0
+            }`}
             onGenerateSuggestions={handleGenerateSuggestions}
           />
         </section>
@@ -107,6 +145,7 @@ export default function PlannerPage() {
           messages={suggestionMessages}
           loading={suggestionsLoading}
           error={suggestionsError}
+          onConfirmTask={handleConfirmSuggestedTask}
         />
       </main>
     </div>
