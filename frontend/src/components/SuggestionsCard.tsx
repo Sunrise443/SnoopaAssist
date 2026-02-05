@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "./ui/button";
 import type { Message } from "@/types/Chat";
+import { useCallback, useEffect, useRef } from "react";
 
 interface SuggestionsCardProps {
   messages: Message[];
@@ -16,13 +17,34 @@ export default function SuggestionsCard({
   error,
   onConfirmTask,
 }: SuggestionsCardProps) {
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = useCallback(() => {
+    if (scrollAreaRef.current) {
+      const viewport = scrollAreaRef.current.querySelector(
+        "[data-radix-scroll-area-viewport]"
+      ) as HTMLElement;
+
+      if (viewport) {
+        // Используем requestAnimationFrame для гарантии, что DOM обновился
+        requestAnimationFrame(() => {
+          viewport.scrollTop = viewport.scrollHeight;
+        });
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
   return (
     <Card className="rounded-2xl h-full flex flex-col h-[calc(100vh-90px)]">
       <CardHeader>
         <CardTitle>Suggestions</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3 flex-1">
-        <ScrollArea className="h-[calc(100vh-210px)]">
+        <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-210px)]">
           <div className="space-y-2">
             {messages.map((msg, i) => (
               <div
