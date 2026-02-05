@@ -27,7 +27,7 @@ Usage
 =====================
 Clone git repository
 ```
-git clone [https://github.com/your-username/snoopa-assist.git](https://github.com/Sunrise443/SnoopaAssist.git)
+git clone https://github.com/Sunrise443/SnoopaAssist.git
 cd snoopa-assist
 ```
 
