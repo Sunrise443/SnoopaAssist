@@ -9,6 +9,7 @@ import {
   ArrowUp,
   Frown,
   Laugh,
+  Loader2,
   Meh,
   Shell,
   Smile,
@@ -35,22 +36,24 @@ interface DayCardProps {
     date: string;
     title: string;
   }) => void;
+  isSuggestionsLoading?: boolean;
 }
 
 export default function DayCard({
   title,
   date,
   onGenerateSuggestions,
+  isSuggestionsLoading,
 }: DayCardProps) {
   const storageKey = `tasks-${date}`;
   const moodStorageKey = `mood-${date}`;
 
   const moods = [
-    { id: "worst", icon: Angry },
-    { id: "worse", icon: Frown },
-    { id: "middle", icon: Meh },
-    { id: "better", icon: Smile },
-    { id: "best", icon: Laugh },
+    { id: "awful", icon: Angry },
+    { id: "bad", icon: Frown },
+    { id: "neutral", icon: Meh },
+    { id: "good", icon: Smile },
+    { id: "amazing", icon: Laugh },
   ];
 
   const [mood, setMood] = useState<string | null>(() => {
@@ -215,7 +218,11 @@ export default function DayCard({
                 });
               }}
             >
-              <Shell />
+              {isSuggestionsLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Shell />
+              )}
             </Button>
           </ButtonGroup>
         </Field>

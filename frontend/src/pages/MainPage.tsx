@@ -9,6 +9,7 @@ import type { Task } from "@/types/Tasks";
 export default function PlannerPage() {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsError, setSuggestionsError] = useState<string | null>(null);
+  const [loadingDay, setLoadingDay] = useState<string | null>(null);
   const [tasksVersion, setTasksVersion] = useState<Record<string, number>>({});
 
   const suggestionStorageKey = `suggestion-${new Date()
@@ -37,6 +38,7 @@ export default function PlannerPage() {
     title: string;
   }) => {
     setSuggestionsLoading(true);
+    setLoadingDay(params.date);
     setSuggestionsError(null);
     try {
       const response = await chatApi.sendMessage({
@@ -58,6 +60,7 @@ export default function PlannerPage() {
       console.log(err);
     } finally {
       setSuggestionsLoading(false);
+      setLoadingDay(null);
     }
   };
 
@@ -123,20 +126,21 @@ export default function PlannerPage() {
             title="Yesterday"
             date={yesterdayDate}
             key={`daycard-${yesterdayDate}-${tasksVersion[yesterdayDate] ?? 0}`}
+            isSuggestionsLoading={loadingDay === yesterdayDate}
             onGenerateSuggestions={handleGenerateSuggestions}
           />
           <DayCard
             title="Today"
             date={todayDate}
             key={`daycard-${todayDate}-${tasksVersion[todayDate] ?? 0}`}
+            isSuggestionsLoading={loadingDay === todayDate}
             onGenerateSuggestions={handleGenerateSuggestions}
           />
           <DayCard
             title="Tomorrow"
             date={tomorrowDate}
-            key={`daycard-${tomorrowDate}-${
-              tasksVersion[tomorrowDate] ?? 0
-            }`}
+            key={`daycard-${tomorrowDate}-${tasksVersion[tomorrowDate] ?? 0}`}
+            isSuggestionsLoading={loadingDay === tomorrowDate}
             onGenerateSuggestions={handleGenerateSuggestions}
           />
         </section>
