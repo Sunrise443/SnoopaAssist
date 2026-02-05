@@ -147,13 +147,10 @@ export default function DayCard({
       <CardContent>
         <ScrollArea className="h-[calc(100vh-240px)]">
           {visibleTasks.length !== 0 ? (
-            visibleTasks.map((taskWithIndex) => (
-              <div
-                className="flex gap-2 items-center"
-                key={taskWithIndex.index}
-              >
+            visibleTasks.map((taskWithIndex, index) => (
+              <div className="flex gap-2 items-center" key={index}>
                 <Checkbox
-                  id={`task-${taskWithIndex.index}`}
+                  id={`task-${taskWithIndex.index}-${index}`}
                   checked={taskWithIndex.completed ?? false}
                   onCheckedChange={(checked) => {
                     setTasks((prev) =>
