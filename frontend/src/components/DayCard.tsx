@@ -24,6 +24,7 @@ import {
   DropdownMenuItem,
 } from "./ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { Task } from "@/types/Tasks";
 
 interface DayCardProps {
   title: string;
@@ -35,12 +36,6 @@ interface DayCardProps {
     title: string;
   }) => void;
 }
-
-export type Task = {
-  title: string;
-  date: string;
-  completed?: boolean;
-};
 
 export default function DayCard({
   title,

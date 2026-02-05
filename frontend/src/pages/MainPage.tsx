@@ -1,8 +1,9 @@
 import { ModeToggle } from "@/components/mode-toggle";
 import DayCard, { type Task } from "@/components/DayCard";
-import SuggestionsCard, { type Message } from "@/components/SuggestionsCard";
+import SuggestionsCard from "@/components/SuggestionsCard";
 import { useEffect, useState } from "react";
 import { chatApi } from "@/services/api";
+import type { Message } from "@/types/Chat";
 
 export default function PlannerPage() {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);

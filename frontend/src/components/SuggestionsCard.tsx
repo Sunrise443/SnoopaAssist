@@ -1,13 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { ChatResponse } from "@/services/api";
 import { Button } from "./ui/button";
+import type { Message } from "@/types/Chat";
 
-export type Message = {
-  date: string;
-  text: ChatResponse;
-  from: string;
-};
 interface SuggestionsCardProps {
   messages: Message[];
   loading: boolean;
