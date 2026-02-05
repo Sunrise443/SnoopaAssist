@@ -1,3 +1,4 @@
+import type React from "react";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -22,19 +23,30 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "./ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DayCardProps {
   title: string;
   date: string;
+  onGenerateSuggestions?: (params: {
+    mood: string | null;
+    tasks: Task[];
+    date: string;
+    title: string;
+  }) => void;
 }
 
-type Task = {
+export type Task = {
   title: string;
   date: string;
   completed?: boolean;
 };
 
-export default function DayCard({ title, date }: DayCardProps) {
+export default function DayCard({
+  title,
+  date,
+  onGenerateSuggestions,
+}: DayCardProps) {
   const storageKey = `tasks-${date}`;
   const moodStorageKey = `mood-${date}`;
 
@@ -99,7 +111,7 @@ export default function DayCard({ title, date }: DayCardProps) {
     .filter((task) => task.date === date);
 
   return (
-    <Card className="rounded-2xl shadow-sm gap-3">
+    <Card className="h-[calc(100vh-90px)]">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="font-bold">
           {title} - {date}
@@ -135,39 +147,44 @@ export default function DayCard({ title, date }: DayCardProps) {
         </DropdownMenu>
       </CardHeader>
       <CardContent>
-        {visibleTasks.length !== 0 ? (
-          visibleTasks.map((taskWithIndex) => (
-            <div className="flex gap-2 items-center" key={taskWithIndex.index}>
-              <Checkbox
-                id={`task-${taskWithIndex.index}`}
-                checked={taskWithIndex.completed ?? false}
-                onCheckedChange={(checked) => {
-                  setTasks((prev) =>
-                    prev.map((task, i) =>
-                      i === taskWithIndex.index
-                        ? { ...task, completed: !!checked }
-                        : task
-                    )
-                  );
-                }}
-              />
-              <div className="flex items-center justify-between w-full p-1">
-                <Label htmlFor={`task-${taskWithIndex.index}`}>
-                  {taskWithIndex.title}
-                </Label>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleTrashClick(taskWithIndex.index)}
-                >
-                  <Trash2Icon className="size-4" />
-                </Button>
+        <ScrollArea className="h-[calc(100vh-240px)]">
+          {visibleTasks.length !== 0 ? (
+            visibleTasks.map((taskWithIndex) => (
+              <div
+                className="flex gap-2 items-center"
+                key={taskWithIndex.index}
+              >
+                <Checkbox
+                  id={`task-${taskWithIndex.index}`}
+                  checked={taskWithIndex.completed ?? false}
+                  onCheckedChange={(checked) => {
+                    setTasks((prev) =>
+                      prev.map((task, i) =>
+                        i === taskWithIndex.index
+                          ? { ...task, completed: !!checked }
+                          : task
+                      )
+                    );
+                  }}
+                />
+                <div className="flex items-center justify-between w-full p-1">
+                  <Label htmlFor={`task-${taskWithIndex.index}`}>
+                    {taskWithIndex.title}
+                  </Label>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleTrashClick(taskWithIndex.index)}
+                  >
+                    <Trash2Icon className="size-4" />
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <span className="text-sm text-muted-foreground">No tasks yet</span>
-        )}
+            ))
+          ) : (
+            <span className="text-sm text-muted-foreground">No tasks yet</span>
+          )}
+        </ScrollArea>
 
         <Field orientation="horizontal" className="mt-2">
           <ButtonGroup className="w-full">
@@ -190,7 +207,19 @@ export default function DayCard({ title, date }: DayCardProps) {
             >
               <ArrowUp />
             </Button>
-            <Button title="Generate tasks" variant="outline">
+            <Button
+              title="Generate tasks"
+              variant="outline"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                onGenerateSuggestions?.({
+                  mood,
+                  tasks: visibleTasks,
+                  date,
+                  title,
+                });
+              }}
+            >
               <Shell />
             </Button>
           </ButtonGroup>

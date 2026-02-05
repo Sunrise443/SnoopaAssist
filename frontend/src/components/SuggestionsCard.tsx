@@ -1,28 +1,30 @@
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { ChatResponse } from "@/services/api";
 
-interface SuggestionsCardProps {}
+export type Message = {
+  date: string;
+  text: ChatResponse;
+  from: string;
+};
+interface SuggestionsCardProps {
+  messages: Message[];
+  loading: boolean;
+  error: string | null;
+}
 
-export default function SuggestionsCard() {
-  const [messages, setMessages] = useState([
-    { from: "system", text: "Привет! Чем могу помочь?" },
-  ]);
+export default function SuggestionsCard({
+  messages,
+  loading,
+  error,
+}: SuggestionsCardProps) {
   return (
-    <Card className="rounded-2xl h-full flex flex-col">
+    <Card className="rounded-2xl h-full flex flex-col h-[calc(100vh-90px)]">
       <CardHeader>
         <CardTitle>Suggestions</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3 flex-1">
-        <ScrollArea className="flex-1 pr-2">
+        <ScrollArea className="h-[calc(100vh-190px)]">
           <div className="space-y-2">
             {messages.map((msg, i) => (
               <div
@@ -38,11 +40,17 @@ export default function SuggestionsCard() {
                   borderRadius: "12px",
                 }}
               >
-                {msg.text}
+                {msg.text.notes}
               </div>
             ))}
           </div>
         </ScrollArea>
+        {loading && (
+          <p className="text-sm text-muted-foreground">
+            Loading suggestions...
+          </p>
+        )}
+        {error && !loading && <p className="text-sm text-red-500">{error}</p>}
       </CardContent>
     </Card>
   );
