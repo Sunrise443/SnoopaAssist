@@ -3,7 +3,7 @@ import type { Task } from "./Tasks";
 export type ChatRequest = {
   mood: string;
   tasks: Task[];
-  personality: string[];
+  personality: string | null;
 };
 
 export type ChatResponse = {

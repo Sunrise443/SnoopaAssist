@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -20,8 +21,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect, useState } from "react";
+import { type PersonalizationData } from "@/types/Personalization";
 
 export function PersonalizationMenu() {
+  const personalizationStorageKey = "personalization";
+
+  const [personalizationData, setPersonalizationData] =
+    useState<PersonalizationData>(() => {
+      if (typeof window === "undefined") {
+        return {
+          occupation: "",
+          workStyle: "",
+          career: "",
+          skills: "",
+          hobbies: "",
+        };
+      }
+
+      const saved = localStorage.getItem(personalizationStorageKey);
+      return saved
+        ? (JSON.parse(saved) as PersonalizationData)
+        : {
+            occupation: "",
+            workStyle: "",
+            career: "",
+            skills: "",
+            hobbies: "",
+          };
+    });
+
+  useEffect(() => {
+    localStorage.setItem(
+      personalizationStorageKey,
+      JSON.stringify(personalizationData)
+    );
+  }, [personalizationData, personalizationStorageKey]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPersonalizationData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleWorkStyleChange = (value: string) => {
+    setPersonalizationData((prev) => ({ ...prev, workStyle: value }));
+  };
+
   return (
     <Dialog>
       <form>
@@ -45,11 +90,16 @@ export function PersonalizationMenu() {
                 id="occupation-1"
                 name="occupation"
                 placeholder="Java programmer - 1 year of experience"
+                value={personalizationData.occupation}
+                onChange={handleChange}
               />
             </Field>
             <Field>
               <Label htmlFor="work-style">Work style</Label>
-              <Select>
+              <Select
+                value={personalizationData.workStyle}
+                onValueChange={handleWorkStyleChange}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select your work style" />
                 </SelectTrigger>
@@ -66,7 +116,13 @@ export function PersonalizationMenu() {
             </Field>
             <Field>
               <Label htmlFor="career">Career goal</Label>
-              <Input id="career" name="career" placeholder="Product manager" />
+              <Input
+                id="career"
+                name="career"
+                placeholder="Product manager"
+                value={personalizationData.career}
+                onChange={handleChange}
+              />
             </Field>
             <Field>
               <Label htmlFor="skills-1">Skill priorities</Label>
@@ -74,6 +130,8 @@ export function PersonalizationMenu() {
                 id="skills"
                 name="skills"
                 placeholder="Math, english speaking"
+                value={personalizationData.skills}
+                onChange={handleChange}
               />
             </Field>
             <Field>
@@ -82,6 +140,8 @@ export function PersonalizationMenu() {
                 id="hobbies"
                 name="hobbies"
                 placeholder="Pottery, gardening"
+                value={personalizationData.hobbies}
+                onChange={handleChange}
               />
             </Field>
           </FieldGroup>
@@ -89,7 +149,9 @@ export function PersonalizationMenu() {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <DialogClose asChild>
+              <Button type="submit">Save changes</Button>
+            </DialogClose>
           </DialogFooter>
         </DialogContent>
       </form>

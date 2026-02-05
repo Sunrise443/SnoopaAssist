@@ -45,7 +45,7 @@ export default function PlannerPage() {
       const response = await chatApi.sendMessage({
         mood: params.mood ?? "neutral",
         tasks: params.tasks,
-        personality: [],
+        personality: localStorage.getItem("personalization"),
       });
 
       const newMessage: Message = {
